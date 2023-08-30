@@ -1,3 +1,6 @@
+import { locService } from './loc.service.js'
+import { appController } from '../app.controller.js'
+
 export const mapService = {
     initMap,
     addMarker,
@@ -28,12 +31,17 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
             infoWindow.open(gMap);
             // Configure the click listener.
             gMap.addListener("click", (mapsMouseEvent) => {
+                const latLng = mapsMouseEvent.latLng.toJSON()
+                appController.onAddLoc(latLng)
+                // locService.createLoc(latLng)
+
                 // Close the current InfoWindow.
                 infoWindow.close();
                 // Create a new InfoWindow.
                 infoWindow = new google.maps.InfoWindow({
                     position: mapsMouseEvent.latLng,
                 });
+
                 infoWindow.setContent(
                     JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2),
                 );

@@ -1,11 +1,16 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
+export const appController = {
+    onAddLoc,
+}
+
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
+window.onAddLoc = onAddLoc
 
 function onInit() {
     mapService.initMap()
@@ -26,6 +31,16 @@ function getPosition() {
 function onAddMarker() {
     console.log('Adding a marker')
     mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 })
+}
+
+function onAddLoc(latLng) {
+    // console.log(latLng)
+    const name = promptForName()
+    locService.createLoc(latLng, name)
+}
+
+function promptForName() {
+    return prompt('Enter name for location: ')
 }
 
 function onGetLocs() {
