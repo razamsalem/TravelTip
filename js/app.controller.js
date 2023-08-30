@@ -38,6 +38,7 @@ function onAddMarker() {
 
 function onAddLoc(latLng) {
     const { lat, lng } = latLng
+    // mapService.addMarker(latLng)
     const name = promptForName()
     const location = locService.createLoc(lat, lng, name)
 
@@ -85,6 +86,7 @@ function renderLocs(locs) {
         </thead>`
 
     locs.map(location => {
+        mapService.addMarker(location)
         strHTMLs +=
             `<tbody>
                 <tr>
