@@ -1,8 +1,12 @@
 import { utilService } from './util.service.js'
+import { storageService } from './async-storage.service.js'
+
+const LOCATION_KEY = 'locsDB'
 
 export const locService = {
     getLocs,
-    createLoc
+    createLoc,
+    save
 }
 
 const locs = [
@@ -10,15 +14,17 @@ const locs = [
     { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
 ]
 
-function createLoc(latLng, name) {
-    const { lat, lng } = latLng
-    const loc = {
-        id: utilService.makeId(),
-        lat,
-        lng,
-        name
+function createLoc(lat, lng, name) {
+    return { lat, lng, name }
+}
+
+
+function save(loc) {
+    if (loc.id) {
+        return storageService.put(LOCATION_KEY, loc)
+    } else {
+        return storageService.post(LOCATION_KEY, loc)
     }
-    locs.unshift(loc)
 }
 
 function getLocs() {

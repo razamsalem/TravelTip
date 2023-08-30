@@ -34,9 +34,13 @@ function onAddMarker() {
 }
 
 function onAddLoc(latLng) {
-    // console.log(latLng)
+    console.log(latLng)
+    const { lat, lng } = latLng
     const name = promptForName()
-    locService.createLoc(latLng, name)
+    const location = locService.createLoc(lat, lng, name)
+
+    locService.save(location)
+        .then(console.log)
 }
 
 function promptForName() {
