@@ -18,6 +18,8 @@ function onInit() {
             console.log('Map is ready')
         })
         .catch(() => console.log('Error: cannot init map'))
+
+    onGetLocs()
 }
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
@@ -48,9 +50,7 @@ function promptForName() {
 
 function onGetLocs() {
     locService.query()
-        .then(locs => {
-            document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
-        })
+        .then(renderLocs)
 }
 
 function onGetUserPos() {
@@ -69,6 +69,27 @@ function onPanTo() {
     mapService.panTo(35.6895, 139.6917)
 }
 
-function renderLocs() {
-    onGetLocs()
+function renderLocs(locs) {
+    const elTable = document.querySelector('.location-table')
+    let strHTMLs = `
+        <thead>
+            <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Actions</th>
+        </thead>`
+
+    locs.map(location => {
+        strHTMLs +=
+            `<tbody>
+                <tr>
+                    <td class="loc-name">${location.name}</td>
+                    <td class="loc-lat">${location.lat}</td>
+                    <td class="loc-lng">${location.lng}</td>
+                    <td class="loc-btns">[] | -> </td>
+                </tr>
+            </tbody>`
+    })
+
+    elTable.innerHTML = strHTMLs
 }
