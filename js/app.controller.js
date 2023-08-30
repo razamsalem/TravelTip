@@ -34,13 +34,12 @@ function onAddMarker() {
 }
 
 function onAddLoc(latLng) {
-    console.log(latLng)
     const { lat, lng } = latLng
     const name = promptForName()
     const location = locService.createLoc(lat, lng, name)
 
     locService.save(location)
-        .then(console.log)
+        .then(onGetLocs)
 }
 
 function promptForName() {
@@ -48,9 +47,8 @@ function promptForName() {
 }
 
 function onGetLocs() {
-    locService.getLocs()
+    locService.query()
         .then(locs => {
-            console.log('Locations:', locs)
             document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
         })
 }
@@ -69,4 +67,8 @@ function onGetUserPos() {
 function onPanTo() {
     console.log('Panning the Map')
     mapService.panTo(35.6895, 139.6917)
+}
+
+function renderLocs() {
+    onGetLocs()
 }
