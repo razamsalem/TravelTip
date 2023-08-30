@@ -57,18 +57,16 @@ function onGetLocs() {
 function onGetUserPos() {
     getPosition()
         .then(pos => {
-            console.log('User position is:', pos.coords)
-            document.querySelector('.user-pos').innerText =
-                `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
+            const { latitude: lat, longitude: lng } = pos.coords
+            onPanTo(lat, lng)
         })
         .catch(err => {
             console.log('err!!!', err)
         })
 }
-function onPanTo(lat = 35.6895 , lng = 139.6917 ) {
+function onPanTo(lat = 35.6895, lng = 139.6917) {
     console.log('Panning the Map')
     mapService.panTo(lat, lng)
-    console.log(lat, lng)
 }
 
 function onRemoveLoc(locId) {
