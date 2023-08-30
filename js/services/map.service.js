@@ -4,8 +4,9 @@ import { appController } from '../app.controller.js'
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
 }
+
 
 // Var that is used throughout this Module (not global)
 var gMap
@@ -23,16 +24,16 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 zoom: 15
             })
             //Create new geocoder
-            geocoder = new google.maps.Geocoder();
+            geocoder = new google.maps.Geocoder()
 
-            const inputText = document.createElement("input");
+            const inputText = document.createElement("input")
             //Create input and btn
-            inputText.type = "text";
-            inputText.placeholder = "Enter a location";
+            inputText.type = "text"
+            inputText.placeholder = "Enter a location"
 
-            const submitButton = document.createElement("input");
-            submitButton.type = "button";
-            submitButton.value = "Geocode";
+            const submitButton = document.createElement("input")
+            submitButton.type = "button"
+            submitButton.value = "Geocode"
             submitButton.classList.add("button", "button-primary");
 
             gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(inputText);
@@ -114,7 +115,6 @@ function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng)
     gMap.panTo(laLatLng)
 }
-
 
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()

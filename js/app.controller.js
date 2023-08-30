@@ -12,6 +12,7 @@ window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 window.onAddLoc = onAddLoc
 window.onRemoveLoc = onRemoveLoc
+window.panToByQueryParams = panToByQueryParams
 
 function onInit() {
     mapService.initMap()
@@ -22,7 +23,6 @@ function onInit() {
 
     onGetLocs()
 }
-
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
     console.log('Getting Pos')
@@ -65,15 +65,46 @@ function onGetUserPos() {
             console.log('err!!!', err)
         })
 }
+
 function onPanTo(lat = 35.6895, lng = 139.6917) {
-    console.log('Panning the Map')
+    console.log(lat, lng)
     mapService.panTo(lat, lng)
+    setQueryParams(lat, lng)
 }
 
 function onRemoveLoc(locId) {
     console.log('Removing a location')
     locService.remove(locId).then(onGetLocs)
 }
+
+
+function setQueryParams(lat, lng) {
+    const queryParams = `?lat=${lat}&lng=${lng}`
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + queryParams
+    window.history.pushState({ path: newUrl }, '', newUrl)
+}
+
+function panToByQueryParams() { 
+    const queryParams = new URLSearchParams(window.location.search)
+       let lat = queryParams.get('lat') || ''
+       let lng = queryParams.get('lng') || ''
+       onPanTo(lat, lng)
+
+    console.log(queryParams)
+    // const filterBy = {
+    //     vendor: queryParams.get('vendor') || '',
+    //     minSpeed: +queryParams.get('minSpeed') || 0
+    // }
+
+    // if (!filterBy.vendor && !filterBy.minSpeed) return
+
+    // document.querySelector('.filter-vendor-select').value = filterBy.vendor
+    // document.querySelector('.filter-speed-range').value = filterBy.minSpeed
+    // setCarFilter(filterBy)
+}
+
+
+
 
 function renderLocs(locs) {
     const elTable = document.querySelector('.location-table')
@@ -89,7 +120,7 @@ function renderLocs(locs) {
         mapService.addMarker(location)
         strHTMLs +=
             `<tbody>
-                <tr>
+                <tr data-loc-id="${location.id}">
                     <td class="loc-name">${location.name}</td>
                     <td class="loc-lat">${location.lat}</td>
                     <td class="loc-lng">${location.lng}</td>
