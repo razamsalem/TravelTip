@@ -11,6 +11,7 @@ window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 window.onAddLoc = onAddLoc
+window.onRemoveLoc = onRemoveLoc
 
 function onInit() {
     mapService.initMap()
@@ -64,9 +65,15 @@ function onGetUserPos() {
             console.log('err!!!', err)
         })
 }
-function onPanTo() {
+function onPanTo(lat = 35.6895 , lng = 139.6917 ) {
     console.log('Panning the Map')
-    mapService.panTo(35.6895, 139.6917)
+    mapService.panTo(lat, lng)
+    console.log(lat, lng)
+}
+
+function onRemoveLoc(locId) {
+    console.log('Removing a location')
+    locService.remove(locId).then(onGetLocs)
 }
 
 function renderLocs(locs) {
@@ -86,10 +93,13 @@ function renderLocs(locs) {
                     <td class="loc-name">${location.name}</td>
                     <td class="loc-lat">${location.lat}</td>
                     <td class="loc-lng">${location.lng}</td>
-                    <td class="loc-btns">[] | -> </td>
+                    <td class="loc-btns"> 
+                    <button onclick="onRemoveLoc('${location.id}')">Remove</button>
+                    <button onclick="onPanTo('${location.lat}','${location.lng}')">Go</button>
+                    </td>
                 </tr>
             </tbody>`
     })
-
+    console.log(locs)
     elTable.innerHTML = strHTMLs
 }
