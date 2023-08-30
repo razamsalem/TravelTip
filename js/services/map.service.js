@@ -10,6 +10,8 @@ export const mapService = {
 
 // Var that is used throughout this Module (not global)
 var gMap
+let geocoder
+let marker
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('InitMap')
@@ -21,6 +23,56 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 center: { lat, lng },
                 zoom: 15
             })
+            //Create new geocoder
+            geocoder = new google.maps.Geocoder();
+
+            const inputText = document.createElement("input");
+            //Create input and btn
+            inputText.type = "text";
+            inputText.placeholder = "Enter a location";
+
+            const submitButton = document.createElement("input");
+            submitButton.type = "button";
+            submitButton.value = "Geocode";
+            submitButton.classList.add("button", "button-primary");
+
+            gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(inputText);
+            gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(submitButton);
+
+            marker = new google.maps.Marker({
+                gMap,
+            });
+
+            function clear() {
+                marker.setMap(null);
+            }
+
+            submitButton.addEventListener("click", () => {
+                geocode({ address: inputText.value })
+                // appController.onAddLoc(latLng)
+
+
+            }
+            );
+
+            function geocode(request) {
+                clear();
+                geocoder
+                    .geocode(request)
+                    .then((result) => {
+                        const { results } = result;
+
+                        gMap.setCenter(results[0].geometry.location);
+                        const latLng = gMap.center.toJSON()
+                        appController.onAddLoc(latLng)
+                        marker.setPosition(results[0].geometry.location);
+                        marker.setMap(gMap);
+                        return results;
+                    })
+                    .catch((e) => {
+                        alert("Geocode was not successful for the following reason: " + e);
+                    });
+            }
 
             // Create the initial InfoWindow.
             let infoWindow = new google.maps.InfoWindow({
@@ -33,9 +85,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
             gMap.addListener("click", (mapsMouseEvent) => {
                 const latLng = mapsMouseEvent.latLng.toJSON()
                 appController.onAddLoc(latLng)
-                // locService.createLoc(latLng)
 
-                // Close the current InfoWindow.
                 infoWindow.close();
                 // Create a new InfoWindow.
                 infoWindow = new google.maps.InfoWindow({
